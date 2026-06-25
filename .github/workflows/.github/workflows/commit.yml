@@ -1,0 +1,41 @@
+name: Auto Commit
+
+on:
+  schedule:
+    # 6:00 AM IST
+    - cron: "30 0 * * *"
+
+    # 1:00 PM IST
+    - cron: "30 7 * * *"
+
+    # 11:30 PM IST
+    - cron: "0 18 * * *"
+
+  workflow_dispatch:
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Update commits.txt
+        run: |
+          echo "Random commit at $(date)" >> commits.txt
+
+      - name: Commit & Push
+        run: |
+          git add commits.txt
+          git commit -m "🤖 Auto Commit $(date '+%Y-%m-%d %H:%M:%S')" || exit 0
+          git push
+          git push
