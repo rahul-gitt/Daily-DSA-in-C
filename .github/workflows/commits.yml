@@ -11,31 +11,40 @@ on:
     # 11:30 PM IST
     - cron: '0 18 * * *'
 
-    # 1:40 AM IST (Test)
-    - cron: '10 20 * * *'
-
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  commit:
+  auto-commit:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Update commits.txt
-        run: |
-          touch commits.txt
-          echo "Commit at $(date)" >> commits.txt
-
-      - name: Commit and Push
+      - name: Setup Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          git add commits.txt
-          git commit -m "Auto Commit $(date)" || exit 0
+      - name: Update Commit Counter
+        run: |
+          if [ ! -f commit_state.txt ]; then
+            echo "0" > commit_state.txt
+          fi
+
+          COUNT=$(cat commit_state.txt)
+          COUNT=$((COUNT + 1))
+          echo "$COUNT" > commit_state.txt
+
+          echo "Random Commit #$COUNT at $(date -u)" >> commits.txt
+
+      - name: Commit & Push
+        run: |
+          git add commit_state.txt commits.txt
+
+          git commit -m "🤖 Random Commit #$(cat commit_state.txt)" || exit 0
+
           git push
