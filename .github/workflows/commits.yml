@@ -1,6 +1,5 @@
 name: Auto Commit
 
-
 on:
   workflow_dispatch:
 
