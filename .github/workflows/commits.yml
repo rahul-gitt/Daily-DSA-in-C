@@ -1,15 +1,6 @@
 name: Auto Commit
 
-on:
-  schedule:
-    # 6:00 AM IST
-    - cron: '30 0 * * *'
 
-    # 1:00 PM IST
-    - cron: '30 7 * * *'
-
-    # 11:30 PM IST
-    - cron: '0 18 * * *'
 
   workflow_dispatch:
 
